@@ -7,13 +7,11 @@ import Sidebar from './Sidebar'
 import Chat from './Chat'
 import Login from './Login'
 import './App.css'
+import {useStateValue} from './StateProvider'
 
 function App() {
-  const [messages, setMessages]=useState([])
-  const [user, setUser]=useState(null)
-  useEffect(()=>{
-
-  })
+  const [{user},dispatch]=useStateValue();
+  console.log(useStateValue)
   return (
     <div className='app'>
       {!user?<Login/>: 
@@ -32,7 +30,7 @@ function App() {
         
         
         </div>      
-      }
+}
   </div>
   );
 }
