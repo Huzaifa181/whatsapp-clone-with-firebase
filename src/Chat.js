@@ -1,10 +1,11 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {Avatar,IconButton} from '@material-ui/core';
 import DonutLargeIcon from '@material-ui/icons/DonutLarge';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ChatIcon from '@material-ui/icons/Chat';
 import MicIcon from '@material-ui/icons/Mic';
 import {useParams} from "react-router-dom";
+import db from './firebase'
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import './Chat.css'
@@ -12,16 +13,27 @@ import axios from './axios'
 const Chat = ({messages}) => {
     const {roomId}=useParams()
     const [input, setInput]=useState("")
+    const [roomName, setRoomName]=useState("")
     const sentMessage=async (e)=>{
        
     }
+    useEffect(()=>{
+        if(roomId){
+            db.collection('rooms').doc(roomId).onSnapshot(snapshot=>{
+                setRoomName(
+                    snapshot.data().name
+                )
+            })
+        }
+
+    },[roomId])
     return (
         <div className='chat'>
            <div className='chat__header'>
             <Avatar/>
             
             <div className='chat__headerInfo'>
-                <h3>Room name</h3>
+                <h3>{roomName}</h3>
                 <p>Last Seen at</p>
             </div>
             <div className='chat__headerRight'>
