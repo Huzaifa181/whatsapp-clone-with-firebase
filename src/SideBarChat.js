@@ -1,9 +1,25 @@
-import React from 'react'
+import React, { useEffect,useState } from 'react'
 import {Avatar} from '@material-ui/core';
 import db from './firebase'
 import {Link} from "react-router-dom";
 import './SideBarChat.css'
 const SideBarChat = ({addNewChat,id,name}) => {
+    const [messages, setMessages]=useState([])
+    useEffect(()=>{
+        if(id){
+            db.collection('rooms').doc(id)
+            .collection('messages').orderBy('timestamp','desc')
+            .onSnapshot(snapshot=>{
+                setMessages(
+                    snapshot.docs.map(doc=>{
+                        return(
+                            doc.data()
+                        )
+                    })
+                )
+            })
+        }        
+    },[id])
     const createChat=()=>{
         const roomName=prompt("Please enter name for chat")
         if(roomName){
@@ -18,7 +34,7 @@ const SideBarChat = ({addNewChat,id,name}) => {
             <Avatar/>
             <div className="sidebarChat__info">
                 <h2>{name}</h2>
-                <p>This is the last message</p>
+                <p>{messages[0]?.message}</p>
             </div>
         </div>
         </Link>
