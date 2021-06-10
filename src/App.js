@@ -5,15 +5,18 @@ import logo from './logo.svg';
 import 'antd/dist/antd.css';
 import Sidebar from './Sidebar'
 import Chat from './Chat'
+import Login from './Login'
 import './App.css'
 
 function App() {
   const [messages, setMessages]=useState([])
+  const [user, setUser]=useState(null)
   useEffect(()=>{
 
   })
   return (
     <div className='app'>
+      {!user?<Login/>: 
         <div className='app__body'>
           <Router> 
             <Switch>
@@ -29,6 +32,7 @@ function App() {
         
         
         </div>      
+      }
   </div>
   );
 }
