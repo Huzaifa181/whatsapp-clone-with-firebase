@@ -4,21 +4,16 @@ import DonutLargeIcon from '@material-ui/icons/DonutLarge';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ChatIcon from '@material-ui/icons/Chat';
 import MicIcon from '@material-ui/icons/Mic';
+import {useParams} from "react-router-dom";
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import './Chat.css'
 import axios from './axios'
 const Chat = ({messages}) => {
+    const {roomId}=useParams()
     const [input, setInput]=useState("")
     const sentMessage=async (e)=>{
-        e.preventDefault();
-        await axios.post('/messages/new',{
-            message:input,
-            name:"Huzaifa",
-            timestamp:new Date().toUTCString(),
-            received:false
-        })
-        setInput('')
+       
     }
     return (
         <div className='chat'>
@@ -42,18 +37,14 @@ const Chat = ({messages}) => {
                 </div>
             </div>
             <div className='chat__body'>
-                {messages.map(mssg=>{
-                    return(
 
-                <p className={`chat__message ${mssg.received && "chat__receiver"}`}>
-                    <span className='chat__name'>{mssg.name}</span>
-                    {mssg.message}
+                <p className="chat__message chat__receiver">
+                    <span className='chat__name'>Huzaifa</span>
+                    Hello
                     <span className="chat__timestamp">
-                        {mssg.timestamp}
+                        3:56 pm
                     </span>
                 </p>
-                    )
-                })}
                
             </div>
             <div className='chat__footer'>

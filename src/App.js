@@ -6,17 +6,10 @@ import 'antd/dist/antd.css';
 import Sidebar from './Sidebar'
 import Chat from './Chat'
 import './App.css'
-import axios from './axios'
 
 function App() {
   const [messages, setMessages]=useState([])
-  useEffect(()=>{
-    axios.get('/messages/sync')
-    .then(res=>{
-      console.log(res)
-      setMessages(res.data)
-    })
-  },[])
+
   useEffect(()=>{
     const pusher = new Pusher('81e0491a168617f6f216', {
       cluster: 'ap2'
@@ -36,8 +29,19 @@ function App() {
   return (
     <div className='app'>
         <div className='app__body'>
-        <Sidebar/>
-        <Chat messages={messages}/>
+          <Router>
+            <Switch>
+              <Sidebar/>
+              <Route path='/rooms/:roomId'>
+                <Chat/>
+              </Route>
+              <Route path='/'>
+              <Chat/>
+              </Route>
+            </Switch>
+          </Router>
+        
+        
         </div>      
   </div>
   );
