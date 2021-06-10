@@ -4,24 +4,46 @@ import DonutLargeIcon from '@material-ui/icons/DonutLarge';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ChatIcon from '@material-ui/icons/Chat';
 import MicIcon from '@material-ui/icons/Mic';
+import {useStateValue} from './StateProvider'
 import {useParams} from "react-router-dom";
+import firebase from 'firebase'
 import db from './firebase'
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import './Chat.css'
 import axios from './axios'
-const Chat = ({messages}) => {
+const Chat = () => {
+    const[{user},dispatch]=useStateValue();
     const {roomId}=useParams()
     const [input, setInput]=useState("")
     const [roomName, setRoomName]=useState("")
+    const [messages, setMessages]=useState([])
     const sentMessage=async (e)=>{
-       
+       e.preventDefault();
+       db.collection('rooms').doc(roomId)
+            .collection('messages').add({
+                message:input,
+                name:user.displayName,
+                timestamp:firebase.firestore.FieldValue.serverTimestamp()
+            })
+       setInput('')
     }
     useEffect(()=>{
         if(roomId){
             db.collection('rooms').doc(roomId).onSnapshot(snapshot=>{
                 setRoomName(
                     snapshot.data().name
+                )
+            })
+            db.collection('rooms').doc(roomId)
+            .collection('messages').orderBy('timestamp','asc')
+            .onSnapshot(snapshot=>{
+                setMessages(
+                    snapshot.docs.map(doc=>{
+                        return(
+                            doc.data()
+                        )
+                    })
                 )
             })
         }
@@ -49,14 +71,18 @@ const Chat = ({messages}) => {
                 </div>
             </div>
             <div className='chat__body'>
+        {messages.map((mssg)=>{
+            return(
 
-                <p className="chat__message chat__receiver">
-                    <span className='chat__name'>Huzaifa</span>
-                    Hello
+                <p className={`chat__message ${mssg.name==user.displayName && "chat__receiver"}`}>
+                    <span className='chat__name'>{mssg.name}</span>
+                    {mssg.message}
                     <span className="chat__timestamp">
-                        3:56 pm
+                        {new Date(mssg.timestamp?.toDate()).toUTCString()}
                     </span>
                 </p>
+            )
+        })}
                
             </div>
             <div className='chat__footer'>
